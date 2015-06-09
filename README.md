@@ -13,11 +13,11 @@
 
     git clone https://github.com/bfin/oes.git
 
-### 3. Download [source text files](http://download.bls.gov/pub/time.series/oe/) into same directory
+### 3. Download [source text files](http://download.bls.gov/pub/time.series/oe/) into `source` directory
 
 ### 4. Create local database
 
-Executing the `create_database.zsh` script from the directory containing the OES data files will sanitize the source files, create the database locally (named `oes` by default), and backup to a file (named `oes.dump` by default). Note: this script was created to work with the 2014 OES dataset structure (published May 2015), which differed from the 2013 structure. Expect subsequent datasets to change as well.
+Executing the `create_database.zsh` script will sanitize the source files, create the database locally (named `oes` by default), and backup to a file (named `oes.dump` by default). Note: this script was created to work with the 2014 OES dataset structure (published May 2015), which differed from the 2013 structure. Expect subsequent datasets to change as well.
 
     zsh create_database.zsh
 
