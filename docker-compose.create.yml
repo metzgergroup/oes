@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  oes:
+    image: postgres:9.5.4
+    volumes:
+      - ./docker_scripts:/docker-entrypoint-initdb.d
+      - ./working:/working
+      - data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: oes
+
+volumes:
+  data:
+    driver: local

@@ -1,11 +1,8 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Directories
-source_dir="source_dir"
-working_dir="working_dir"
-
-# New database name
-dbname="dbname"
+source_dir="source"
+working_dir="working"
 
 # Create working directory
 echo "Creating working directory..."
@@ -47,44 +44,9 @@ echo "Files sanitized."
 
 # Remove first line (header) from each file
 echo "Removing header lines from files..."
-for file (${working_dir}/*) sed -i '1d' $file
-echo "Header lines removed."
-
-# Create empty database
-echo "Creating database named ${dbname}..."
-createdb ${dbname}
-echo "Database created."
-
-# Add tables to database
-echo "Creating tables in ${dbname}..."
-psql --file=create_tables.sql --dbname=${dbname}
-echo "Tables created."
-
-# Tables listed based on dependencies
-# (i.e., referenced tables precede referencing tables)
-tables=(
-    areatype
-    footnote
-    industry
-    occupation
-    seasonal
-    sector
-    area
-    datatype
-    series
-    data
-)
-
-# Copy tab-delimited data from files into tables
-echo "Copying data from source files to database..."
-for table in ${tables}; do
-    psql --command="COPY ${table} FROM '${PWD}/${working_dir}/${table}' WITH NULL '';" --dbname=${dbname}
+for file in ${working_dir}/*; do
+    sed -i '1d' ${file}
 done
-echo "Copying complete."
-
-# Create backup
-echo "Backing up to ${dbname}.dump..."
-pg_dump --format=custom ${dbname} > ${dbname}.dump
-echo "Backup complete."
+echo "Header lines removed."
 
 echo "Done."

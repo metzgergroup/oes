@@ -1,42 +1,87 @@
-## Re-create the Occupation Employment Statistics database
+# Occupation Employment Statistics database
 
-### 1. Install required binaries
+This repo provides instructions to re-create the OES database in a Docker image.
 
-- `zsh`
+---
+
+### Step 1: Prepare
+
+1. Clone repository
+2. Install requirements
+3. Adjust source files
+4. Clean Docker resources
+
+Clone this repository:
+
+    git lfs clone https://gitlab.com/metzger-group/oes.git
+
+**Note the `lfs` in the command. The source files and backup archive are stored in the git large file service. Standard `git clone` operations are significantly slower than `git lfs clone`.**
+
+Install the requirements:
+
 - GNU version of `sed`
 - `dos2unix` (to fix line-endings in source files)
+
     ```
-    brew install zsh dos2unix gnu-sed --with-default-names
+    brew install dos2unix gnu-sed --with-default-names
     ```
 
-### 2. Clone repo
+Run the `fix_source_files.sh` script to fix inconsistencies in the source files. (This will create a new directory -- named `working` by default -- and move the fixed source files into it.)
 
-    git clone https://github.com/bfin/oes.git
+    sh fix_source_files.sh
 
-### 3. Download [source text files](http://download.bls.gov/pub/time.series/oe/) into `source` directory
+Make sure old services and containers are removed:
 
-### 4. Create local database
+    docker-compose --file docker-compose.create.yml down --volumes
+    docker-compose --file docker-compose.backup.yml down --volumes
 
-Executing the `create_database.zsh` script will sanitize the source files, create the database locally (named `oes` by default), and backup to a file (named `oes.dump` by default). Note: this script was created to work with the 2014 OES dataset structure (published May 2015), which differed from the 2013 structure. Expect subsequent datasets to change as well.
+#### Note for future versions
 
-    zsh create_database.zsh
+When a new database is released, download [the source files](http://download.bls.gov/pub/time.series/oe/) into the `source` directory.
 
-### 5. Create online database
+**Note: these instructions were created to work with the 2014 OES dataset structure, which differed from the 2013 structure. Expect subsequent datasets to change as well.**
 
-If you already have an online database named `oes`:
+---
 
-    psql --host=<endpoint> --port=<port> --username=<user> --dbname=oes
+### Step 2: Create
 
-If no online database exists yet but you have a server instance running, connect to the `template1` database:
+1. Start new Postgres container with entryscript, source files, and blank data volume attached
+2. Script will create the database
+3. Shut down the database gracefully
 
-    psql --host=<endpoint> --port=<port> --username=<user> --dbname=template1
+Re-create the database from the included initialization scripts and source text files by mounting them in the Postgres container:
 
-Then create the `oes` database from within `psql`:
+    docker-compose --file docker-compose.create.yml up
 
-    CREATE DATABASE oes;
+When the installation is complete, gracefully stop the database server and remove the container:
 
-### 6. Copy to online database
+    docker-compose --file docker-compose.create.yml down
 
-Note: this is going to take a while. Use the `verbose` flag so it doesn't look as though the command isn't working.
+---
 
-    pg_restore --host=<endpoint> --port=<port> --username=<user> --dbname=oes --schema=public --no-owner --no-privileges --no-tablespaces --verbose oes.dump
+### Step 3: Archive
+
+The `docker-compose.backup.yml` file instructs docker to start a new non-Postgres container with the local backup directory and the named data volume both mounted as volumes. The container then archives all of the data from the data volume into the local backup directory.
+
+    docker-compose --file docker-compose.backup.yml up
+
+When the archive operation is complete, stop and remove the container and data volume:
+
+    docker-compose --file docker-compose.backup.yml down --volumes
+
+---
+
+### Step 4: Registry
+
+The default data directory in the official Postgres image is mounted as a volume and cannot be persisted in the same image. The included Dockerfile extracts the data archive into a directory in a Postgres container and sets the PGDATA environment variable so the server knows where to look for the data:
+
+    docker build --tag registry.gitlab.com/metzger-group/oes:latest --tag registry.gitlab.com/metzger-group/oes:2014 .
+
+Push image to the registry:
+
+    docker login registry.gitlab.com
+    docker push registry.gitlab.com/metzger-group/oes
+
+Pull image from the registry (on another computer):
+
+    docker pull registry.gitlab.com/metzger-group/oes

@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  backup:
+    image: debian:jessie
+    volumes:
+      - ./backup:/backup
+      - data:/data
+    command: bash -c "tar -cvpzf /backup/data.tar.gz -C /data . && echo 'backup complete'"
+
+volumes:
+  data:
+    driver: local
