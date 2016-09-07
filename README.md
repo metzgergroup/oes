@@ -1,42 +1,20 @@
-## Re-create the Occupation Employment Statistics database
+# Occupation Employment Statistics database
 
-### 1. Install required binaries
+This repo re-creates the OES database in a Docker image available at registry.gitlab.com/metzger-group/oes<tag>.
 
-- `zsh`
-- GNU version of `sed`
-- `dos2unix` (to fix line-endings in source files)
-    ```
-    brew install zsh dos2unix gnu-sed --with-default-names
-    ```
+The image is built, tagged, and pushed to the registry via a GitLab CI pipeline. In that pipeline, the database is created from the source data with the database files written into a Docker volume, then that volume is used to overwrite the default `PGDATA` directory in a new Postgres image. Source files are archived and compressed, then stored using the git large file service.
 
-### 2. Clone repo
+#### Note for future versions
 
-    git clone https://github.com/bfin/oes.git
+When a new database is released, download [the source files](http://download.bls.gov/pub/time.series/oe/) into the `docker-scripts/data` directory and review the data structure for changes/errors. The 2014 and 2015 OES dataset structure differed slightly from the 2013 structure; expect structural changes in subsequent datasets as well.
 
-### 3. Download [source text files](http://download.bls.gov/pub/time.series/oe/) into `source` directory
+Before committing, archive and compress the source files (and then remove the originals). From the repository root directory:
 
-### 4. Create local database
+    tar -cvpzf docker-scripts/data/data.tar.gz --exclude='.DS_Store' -C docker-scripts/data .
+    rm -f docker-scripts/data/oe.*
 
-Executing the `create_database.zsh` script will sanitize the source files, create the database locally (named `oes` by default), and backup to a file (named `oes.dump` by default). Note: this script was created to work with the 2014 OES dataset structure (published May 2015), which differed from the 2013 structure. Expect subsequent datasets to change as well.
+#### Note for local development
 
-    zsh create_database.zsh
+The `fix_source_script.sh` script requires the GNU version of `sed` as well as `dos2unix`, which can be installed on Mac OS X using Homebrew:
 
-### 5. Create online database
-
-If you already have an online database named `oes`:
-
-    psql --host=<endpoint> --port=<port> --username=<user> --dbname=oes
-
-If no online database exists yet but you have a server instance running, connect to the `template1` database:
-
-    psql --host=<endpoint> --port=<port> --username=<user> --dbname=template1
-
-Then create the `oes` database from within `psql`:
-
-    CREATE DATABASE oes;
-
-### 6. Copy to online database
-
-Note: this is going to take a while. Use the `verbose` flag so it doesn't look as though the command isn't working.
-
-    pg_restore --host=<endpoint> --port=<port> --username=<user> --dbname=oes --schema=public --no-owner --no-privileges --no-tablespaces --verbose oes.dump
+    brew install gnu-sed --with-default-names dos2unix
