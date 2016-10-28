@@ -3,11 +3,11 @@
 # Directories
 source_dir="docker-scripts/data"
 
-# # Remove redundant data file
-# echo "Removing redundant data file..."
-# rm -f ${source_dir}/*.AllData
+# Remove redundant data file
+echo "Removing redundant data file..."
+rm -f ${source_dir}/*.AllData
 
-# echo
+echo
 
 # # Rename files
 # prefix_pattern=oe\.
@@ -29,7 +29,7 @@ source_dir="docker-scripts/data"
 # echo
 
 # Convert source files to Unix format
-find ${source_dir}/* -type f -exec dos2unix {} \;
+find ${source_dir}/* -type f ! -name *.tar.gz -exec dos2unix {} \;
 
 echo
 
@@ -40,7 +40,9 @@ echo "Sanitizing source files..."
 # (1) Remove trailing spaces and tabs
 # (2) Reduce multiple spaces to single spaces
 # (3) Replace a space followed by a tab with just a tab
-sed1="sed -e 's/[ \t]*$//' -e 's/ \+/ /g' -e 's/ \t/\t/g'"
+# (4) Replace a tab followed by a space with just a tab
+# (5) Replace all tabs with pipes (for delimiter)
+sed1="sed -e 's/[ \t]*$//' -e 's/ \+/ /g' -e 's/ \t/\t/g' -e 's/\t /\t/g' -e 's/\t/|/g'"
 eval ${sed1} -i ${source_dir}/oe.area
 eval ${sed1} -i ${source_dir}/oe.areatype
 eval ${sed1} -i ${source_dir}/oe.datatype
@@ -52,11 +54,12 @@ eval ${sed1} -i ${source_dir}/oe.sector
 eval ${sed1} -i ${source_dir}/oe.series
 
 # For files with an optional last field:
-# (1) Remove trailing spaces (but leave tabs)
-# (2) Reduce multiple spaces to single spaces
-# (3) Replace a space followed by a tab with just a tab
-# (4) Replace multiple trailing tabs with a single tab
-sed2="sed -e 's/ *$//' -e 's/ \+/ /g' -e 's/ \t/\t/g' -e 's/\t\+$/\t/g'"
+# (1) Remove all spaces (but leave tabs)
+# (2) Replace multiple trailing tabs with a single tab (error in dataset)
+# (3) Remove hyphens when surrounded by tabs (used to indicate null values)
+# (4) Remove all commas
+# (5) Replace all tabs with pipes (for delimiter)
+sed2="sed -e 's/ \+//g' -e 's/\t\+$/\t/g' -e 's/\t-\t/\t\t/g' -e 's/,//g' -e 's/\t/|/g'"
 eval ${sed2} -i ${source_dir}/oe.data*
 
 echo
@@ -64,7 +67,7 @@ echo
 # Remove first line (header) from each data file
 echo "Removing header lines from data files..."
 for file in ${source_dir}/*; do
-    if [[ $file != *oe.txt* ]]
+    if [[ $file != *oe.txt && $file != *oe.contacts && $file != *.tar.gz ]]
     then
         sed -i '1d' ${file}
     fi
