@@ -1,6 +1,6 @@
 \echo area
 
-CREATE TABLE area (
+CREATE UNLOGGED TABLE area (
   state_code TEXT NOT NULL,
   area_code TEXT NOT NULL,
   areatype_code TEXT NOT NULL REFERENCES areatype(areatype_code),
@@ -10,5 +10,7 @@ CREATE TABLE area (
 
 \set filepath `echo ${DATA_DIR}`/oe.area
 COPY area (state_code, area_code, areatype_code, area_name) FROM :'filepath' WITH DELIMITER '|';
+
+ALTER TABLE area SET LOGGED;
 
 \echo

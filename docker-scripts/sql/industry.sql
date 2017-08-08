@@ -1,6 +1,6 @@
 \echo industry
 
-CREATE TABLE industry (
+CREATE UNLOGGED TABLE industry (
   industry_code TEXT PRIMARY KEY,
   industry_name TEXT NOT NULL,
   display_level INTEGER NOT NULL,
@@ -10,5 +10,7 @@ CREATE TABLE industry (
 
 \set filepath `echo ${DATA_DIR}`/oe.industry
 COPY industry (industry_code, industry_name, display_level, selectable, sort_sequence) FROM :'filepath' WITH DELIMITER '|';
+
+ALTER TABLE industry SET LOGGED;
 
 \echo

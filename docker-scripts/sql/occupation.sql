@@ -1,6 +1,6 @@
 \echo occupation
 
-CREATE TABLE occupation (
+CREATE UNLOGGED TABLE occupation (
   occupation_code TEXT PRIMARY KEY,
   occupation_name TEXT NOT NULL,
   display_level INTEGER NOT NULL,
@@ -10,5 +10,7 @@ CREATE TABLE occupation (
 
 \set filepath `echo ${DATA_DIR}`/oe.occupation
 COPY occupation (occupation_code, occupation_name, display_level, selectable, sort_sequence) FROM :'filepath' WITH DELIMITER '|';
+
+ALTER TABLE occupation SET LOGGED;
 
 \echo

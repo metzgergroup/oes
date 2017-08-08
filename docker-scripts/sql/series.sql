@@ -1,6 +1,6 @@
 \echo series
 
-CREATE TABLE series (
+CREATE UNLOGGED TABLE series (
   series_id TEXT PRIMARY KEY,
   seasonal TEXT NOT NULL REFERENCES seasonal(seasonal),
   areatype_code TEXT NOT NULL REFERENCES areatype(areatype_code),
@@ -21,5 +21,7 @@ CREATE TABLE series (
 
 \set filepath `echo ${DATA_DIR}`/oe.series
 COPY series (series_id, seasonal, areatype_code, industry_code, occupation_code, datatype_code, state_code, area_code, sector_code, series_title, footnote_codes, begin_year, begin_period, end_year, end_period) FROM :'filepath' WITH DELIMITER '|' NULL '';
+
+ALTER TABLE series SET LOGGED;
 
 \echo
