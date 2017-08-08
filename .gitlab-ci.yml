@@ -11,7 +11,7 @@ stages:
 variables:
   TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
   RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
-  POSTGRES_VERSION: 9.6.1-alpine
+  POSTGRES_VERSION: 9.6.3-alpine
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
