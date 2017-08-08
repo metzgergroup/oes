@@ -8,7 +8,7 @@ CREATE UNLOGGED TABLE industry (
   sort_sequence INTEGER NOT NULL
 );
 
-\set filepath `echo ${DATA_DIR}`/oe.industry
+\set filepath `echo ${DATA_DIR}`/oe.industry.txt
 COPY industry (industry_code, industry_name, display_level, selectable, sort_sequence) FROM :'filepath' WITH DELIMITER '|';
 
 ALTER TABLE industry SET LOGGED;

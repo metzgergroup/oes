@@ -8,7 +8,7 @@ CREATE UNLOGGED TABLE data (
   footnote_code INTEGER REFERENCES footnote(footnote_code)
 );
 
-\set filepath `echo ${DATA_DIR}`/oe.data.0.Current
+\set filepath `echo ${DATA_DIR}`/oe.data.0.Current.txt
 COPY data (series_id, year, period, value, footnote_code) FROM :'filepath' WITH DELIMITER '|' NULL '';
 
 ALTER TABLE data SET LOGGED;

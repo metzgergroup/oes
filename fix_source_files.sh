@@ -43,15 +43,15 @@ echo "Sanitizing source files..."
 # (4) Replace a tab followed by a space with just a tab
 # (5) Replace all tabs with pipes (for delimiter)
 sed1="sed -e 's/[ \t]*$//' -e 's/ \+/ /g' -e 's/ \t/\t/g' -e 's/\t /\t/g' -e 's/\t/|/g'"
-eval ${sed1} -i ${source_dir}/oe.area
-eval ${sed1} -i ${source_dir}/oe.areatype
-eval ${sed1} -i ${source_dir}/oe.datatype
-eval ${sed1} -i ${source_dir}/oe.footnote
-eval ${sed1} -i ${source_dir}/oe.industry
-eval ${sed1} -i ${source_dir}/oe.occupation
-eval ${sed1} -i ${source_dir}/oe.seasonal
-eval ${sed1} -i ${source_dir}/oe.sector
-eval ${sed1} -i ${source_dir}/oe.series
+eval ${sed1} -i ${source_dir}/oe.area.txt
+eval ${sed1} -i ${source_dir}/oe.areatype.txt
+eval ${sed1} -i ${source_dir}/oe.datatype.txt
+eval ${sed1} -i ${source_dir}/oe.footnote.txt
+eval ${sed1} -i ${source_dir}/oe.industry.txt
+eval ${sed1} -i ${source_dir}/oe.occupation.txt
+eval ${sed1} -i ${source_dir}/oe.seasonal.txt
+eval ${sed1} -i ${source_dir}/oe.sector.txt
+eval ${sed1} -i ${source_dir}/oe.series.txt
 
 # For files with an optional last field:
 # (1) Remove all spaces (but leave tabs)

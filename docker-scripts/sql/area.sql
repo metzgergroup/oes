@@ -8,7 +8,7 @@ CREATE UNLOGGED TABLE area (
   PRIMARY KEY (state_code, area_code)
 );
 
-\set filepath `echo ${DATA_DIR}`/oe.area
+\set filepath `echo ${DATA_DIR}`/oe.area.txt
 COPY area (state_code, area_code, areatype_code, area_name) FROM :'filepath' WITH DELIMITER '|';
 
 ALTER TABLE area SET LOGGED;
