@@ -24,7 +24,7 @@ before_script:
 build:
   stage: build
   script:
-    - echo http://dl-3.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
+    - echo http://dl-3.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
     - apk add --no-cache bash bash-doc bash-completion dos2unix sed
     - git lfs pull
     - tar -zxvf docker-scripts/data/data.tar.gz -C docker-scripts/data
