@@ -68,7 +68,5 @@ build:
 push:
 	docker push $(IMAGE_NAME):$(shell cat ${SOURCE_DIR}/oe.release | awk 'END {print $$1}')
 
-snapshot: build push
-
 clean:
-	rm -rf ${SOURCE_DIR}/*
+	find ${SOURCE_DIR} -type f -not -name '*.tar.gz' -delete
