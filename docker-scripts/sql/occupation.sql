@@ -8,7 +8,7 @@ CREATE UNLOGGED TABLE occupation (
   sort_sequence INTEGER NOT NULL
 );
 
-\set filepath `echo ${DATA_DIR}`/oe.occupation.txt
+\set filepath `echo ${DATA_DIR}`/oe.occupation
 COPY occupation (occupation_code, occupation_name, display_level, selectable, sort_sequence) FROM :'filepath' WITH DELIMITER '|';
 
 ALTER TABLE occupation SET LOGGED;

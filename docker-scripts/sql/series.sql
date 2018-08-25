@@ -19,7 +19,7 @@ CREATE UNLOGGED TABLE series (
   FOREIGN KEY (state_code, area_code) REFERENCES area(state_code, area_code)
 );
 
-\set filepath `echo ${DATA_DIR}`/oe.series.txt
+\set filepath `echo ${DATA_DIR}`/oe.series
 COPY series (series_id, seasonal, areatype_code, industry_code, occupation_code, datatype_code, state_code, area_code, sector_code, series_title, footnote_codes, begin_year, begin_period, end_year, end_period) FROM :'filepath' WITH DELIMITER '|' NULL '';
 
 ALTER TABLE series SET LOGGED;
