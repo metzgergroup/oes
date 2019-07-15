@@ -1,5 +1,5 @@
 SHELL = /bin/bash
-IMAGE_NAME = 899239495551.dkr.ecr.us-east-2.amazonaws.com/oes
+IMAGE_NAME = gcr.io/acat-shared/oes
 SOURCE_DIR = docker-scripts/data
 PG_VERSION = latest
 SED1 = sed -e 's/[ \t]*$$//' -e 's/ \+/ /g' -e 's/ \t/\t/g' -e 's/\t /\t/g' -e 's/\t/|/g'
