@@ -1,7 +1,7 @@
 SHELL = /bin/bash
 IMAGE_NAME = gcr.io/acat-shared/oes
 SOURCE_DIR = docker-scripts/data
-PG_VERSION = latest
+PG_VERSION = 11.7
 SED1 = sed -e 's/[ \t]*$$//' -e 's/ \+/ /g' -e 's/ \t/\t/g' -e 's/\t /\t/g' -e 's/\t/|/g'
 SED2 = sed -e 's/ \+//g' -e 's/\t\+$$/\t/g' -e 's/\t-\t/\t\t/g' -e 's/,//g' -e 's/\t/|/g'
 

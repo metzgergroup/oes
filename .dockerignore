@@ -1,1 +1,2 @@
 .git*
+docker-scripts/data/*.tar.gz
